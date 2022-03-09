@@ -27,8 +27,6 @@ def scan(args):
     logger.debug('scanning!')
 
     config = get_config()
-    import pdb
-    pdb.set_trace()
     if config is None or 'scan' not in config or \
             'scan_dirs' not in config['scan']:
         logger.info('scan directories not defined in config file')
