@@ -1,3 +1,3 @@
 # Mud
 
-A multi-machine de-duper.
+A multi-machine deduper.
