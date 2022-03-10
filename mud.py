@@ -6,6 +6,8 @@ import json
 import logging
 from pathlib import Path
 
+from psycopg import connect
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -23,8 +25,14 @@ def get_config():
     else:
         return None
 
+def init(args):
+    logger.debug('entered init')
+
+    conn = connect(dbname='mud', user='postgres', host='localhost', password='pass')
+
+
 def scan(args):
-    logger.debug('scanning!')
+    logger.debug('entered scan')
 
     config = get_config()
     if config is None or 'scan' not in config or \
@@ -46,6 +54,9 @@ def main():
 
     parser_scan = subparsers.add_parser('scan')
     parser_scan.set_defaults(func=scan)
+
+    parser_scan = subparsers.add_parser('init')
+    parser_scan.set_defaults(func=init)
 
     args = parser.parse_args()
     args.func(args)
