@@ -28,7 +28,11 @@ def get_config():
 def init(args):
     logger.debug('entered init')
 
-    conn = connect(dbname='mud', user='postgres', host='localhost', password='pass')
+    conn = connect(dbname='postgres', user='mud', host='localhost', password='secret')
+    cursor = conn.cursor()
+    cursor.execute('SHOW WORK_MEM')
+    memory = cursor.fetchone()
+    print(memory)
 
 
 def scan(args):
