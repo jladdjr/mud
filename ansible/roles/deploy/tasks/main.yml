@@ -1,5 +1,8 @@
 ---
 
+- import_tasks: install_postgres.yml
+  tags: install_postgres
+
 - import_tasks: create_roles.yml
   tags: create_roles
 

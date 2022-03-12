@@ -1,0 +1,7 @@
+---
+- name: Install postgres
+  apt:
+    name:
+      - postgresql-13
+      - postgresql-doc-13
+  become: true
