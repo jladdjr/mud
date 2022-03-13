@@ -5,3 +5,9 @@
       - postgresql-13
       - postgresql-doc-13
   become: true
+
+- name: Set postgres password
+  user:
+    name: postgres
+    password: "{{ postgres_os_password | password_hash('sha512') }}"
+  become: true

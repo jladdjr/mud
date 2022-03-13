@@ -1,4 +1,40 @@
 ---
 
-- debug:
-    msg: "create roles"
+- name: Temporarily grant local access to postgres
+  postgresql_pg_hba:
+    dest: /etc/postgresql/13/main/pg_hba.conf
+    contype: local
+    users: postgres
+    databases: postgres
+    method: trust
+    state: present
+  become: true
+
+- name: Prompt postgres to reload configuration
+  service:
+    name: postgresql
+    state: restarted
+  become: true
+
+- name: Confirm postgres user has access
+  postgresql_query:
+    db: postgres
+    login_user: postgres
+    query: 'SELECT version()'
+  register: postgres_version
+
+- name: Print postgresql version
+  debug:
+    var: postgres_version.query_result
+
+# postgres user should still have 'peer' access
+# (in which postgres os account is used for authentication)
+- name: Drop local access for postgres
+  postgresql_pg_hba:
+    dest: /etc/postgresql/13/main/pg_hba.conf
+    contype: local
+    users: postgres
+    databases: postgres
+    method: trust
+    state: absent
+  become: true
