@@ -41,7 +41,6 @@
     db: mud
     name: mud
     password: "{{ mud_pg_password }}"
-    priv: "ALL"
     login_user: postgres
   become: true
   become_user: postgres
