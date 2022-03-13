@@ -1,4 +1,11 @@
 ---
 
-- debug:
-    msg: "create db schema"
+- postgresql_table:
+    db: mud
+    name: machine
+    columns:
+      - machine_id int primary key
+      - hostname text
+      - description text
+    login_user: mud
+    login_password: "{{mud_pg_password}}"
