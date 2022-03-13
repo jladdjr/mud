@@ -27,6 +27,35 @@
   debug:
     var: postgres_version.query_result
 
+- name: Create mud db
+  postgresql_db:
+    name: mud
+    state: present
+    login_user: postgres
+
+- debug:
+    var: mud_pg_password
+
+- name: Create mud user in postgres
+  postgresql_user:
+    db: mud
+    name: mud
+    password: "{{ mud_pg_password }}"
+    priv: "ALL"
+    login_user: postgres
+  become: true
+  become_user: postgres
+
+- name: Grant local access to mud
+  postgresql_pg_hba:
+    dest: /etc/postgresql/13/main/pg_hba.conf
+    contype: local
+    users: mud
+    databases: mud
+    method: md5
+    state: present
+  become: true
+
 # postgres user should still have 'peer' access
 # (in which postgres os account is used for authentication)
 - name: Drop local access for postgres
@@ -37,4 +66,10 @@
     databases: postgres
     method: trust
     state: absent
+  become: true
+
+- name: Prompt postgres to reload configuration
+  service:
+    name: postgresql
+    state: restarted
   become: true
