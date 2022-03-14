@@ -5,6 +5,3 @@
 
 - import_tasks: create_db_and_roles.yml
   tags: create_roles
-
-- import_tasks: create_db_schema.yml
-  tags: create_db_schema

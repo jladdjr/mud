@@ -1,0 +1,119 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.5 (Debian 13.5-0+deb11u1)
+-- Dumped by pg_dump version 13.5 (Debian 13.5-0+deb11u1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: machines; Type: TABLE; Schema: public; Owner: mud
+--
+
+CREATE TABLE public.machines (
+    machine_id integer NOT NULL,
+    hostname text,
+    description text
+);
+
+
+ALTER TABLE public.machines OWNER TO mud;
+
+--
+-- Name: scan_sessions; Type: TABLE; Schema: public; Owner: mud
+--
+
+CREATE TABLE public.scan_sessions (
+    scan_session_id integer NOT NULL,
+    scan_state_id integer
+);
+
+
+ALTER TABLE public.scan_sessions OWNER TO mud;
+
+--
+-- Name: scan_states; Type: TABLE; Schema: public; Owner: mud
+--
+
+CREATE TABLE public.scan_states (
+    scan_state_id integer NOT NULL,
+    scan_state text
+);
+
+
+ALTER TABLE public.scan_states OWNER TO mud;
+
+--
+-- Data for Name: machines; Type: TABLE DATA; Schema: public; Owner: mud
+--
+
+COPY public.machines (machine_id, hostname, description) FROM stdin;
+\.
+
+
+--
+-- Data for Name: scan_sessions; Type: TABLE DATA; Schema: public; Owner: mud
+--
+
+COPY public.scan_sessions (scan_session_id, scan_state_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: scan_states; Type: TABLE DATA; Schema: public; Owner: mud
+--
+
+COPY public.scan_states (scan_state_id, scan_state) FROM stdin;
+\.
+
+
+--
+-- Name: machines machines_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.machines
+    ADD CONSTRAINT machines_pkey PRIMARY KEY (machine_id);
+
+
+--
+-- Name: scan_sessions scan_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.scan_sessions
+    ADD CONSTRAINT scan_sessions_pkey PRIMARY KEY (scan_session_id);
+
+
+--
+-- Name: scan_states scan_states_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.scan_states
+    ADD CONSTRAINT scan_states_pkey PRIMARY KEY (scan_state_id);
+
+
+--
+-- Name: scan_sessions scan_states_fk; Type: FK CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.scan_sessions
+    ADD CONSTRAINT scan_states_fk FOREIGN KEY (scan_state_id) REFERENCES public.scan_states(scan_state_id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

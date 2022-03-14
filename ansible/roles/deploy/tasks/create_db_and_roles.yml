@@ -30,7 +30,8 @@
 - name: Create mud db
   postgresql_db:
     name: mud
-    state: present
+    state: restore
+    target: mud.sql
     login_user: postgres
 
 - debug:
