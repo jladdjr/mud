@@ -1,45 +1,14 @@
 ---
 
-- name: Temporarily grant local access to postgres
-  postgresql_pg_hba:
-    dest: /etc/postgresql/13/main/pg_hba.conf
-    contype: local
-    users: postgres
-    databases: postgres
-    method: trust
-    state: present
-  become: true
-
-- name: Prompt postgres to reload configuration
-  service:
-    name: postgresql
-    state: restarted
-  become: true
-
-- name: Confirm postgres user has access
-  postgresql_query:
-    db: postgres
-    login_user: postgres
-    query: 'SELECT version()'
-  register: postgres_version
-
-- name: Print postgresql version
-  debug:
-    var: postgres_version.query_result
-
-- name: Create mud db
-  postgresql_db:
-    name: mud
-    state: restore
-    target: mud.sql
-    login_user: postgres
-
-- debug:
-    var: mud_pg_password
+# postgresql_db seems unable to look up db dump file
+# relative to the role, so create a copy in /tmp
+- name: Create copy of db schema
+  copy:
+    src: mud.sql
+    dest: /tmp/mud.sql
 
 - name: Create mud user in postgres
   postgresql_user:
-    db: mud
     name: mud
     password: "{{ mud_pg_password }}"
     login_user: postgres
@@ -56,20 +25,27 @@
     state: present
   become: true
 
-# postgres user should still have 'peer' access
-# (in which postgres os account is used for authentication)
-- name: Drop local access for postgres
-  postgresql_pg_hba:
-    dest: /etc/postgresql/13/main/pg_hba.conf
-    contype: local
-    users: postgres
-    databases: postgres
-    method: trust
+- name: Remove existing mud db if present
+  postgresql_db:
+    name: mud
     state: absent
+    login_user: postgres
   become: true
+  become_user: postgres
 
-- name: Prompt postgres to reload configuration
-  service:
-    name: postgresql
-    state: restarted
+- name: Create mud db
+  postgresql_db:
+    name: mud
+    state: present
+    login_user: postgres
   become: true
+  become_user: postgres
+
+- name: Create mud db schema
+  postgresql_db:
+    name: mud
+    state: restore
+    target: /tmp/mud.sql
+    login_user: postgres
+  become: true
+  become_user: postgres
