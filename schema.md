@@ -1,6 +1,6 @@
 # Schema Design
 
-## machine
+## machines
 
 Description:
 Represents a host.
@@ -9,7 +9,7 @@ Represents a host.
 - String hostname
 - String description
 
-## scan_session
+## scan_sessions
 
 Description:
 Represents a session in which mud scanned directories to collect file metadata.
@@ -29,7 +29,7 @@ The states representing the life cycle of a scan. Validates scan states for the 
 - Primary Key scan_state_id
 - str scan_state
 
-## file_metadata_snapshot
+## file_metadata_snapshots
 
 Description:
 Represents metadata about a file at a given point in time.
@@ -42,7 +42,7 @@ Represents metadata about a file at a given point in time.
 - DateTime created
 - DateTime modified
 
-## file_metadata_snapshot
+## file_metadata_snapshots
 
 Description:
 Represents a specific file located on a specific machine.
@@ -51,7 +51,7 @@ Represents a specific file located on a specific machine.
 - Foreign Key machine_id
 - String absolute_path
 
-## dedup_session
+## dedup_sessions
 
 Description:
 Represents a session in which mud analyzed file metadata to identify duplicates.
