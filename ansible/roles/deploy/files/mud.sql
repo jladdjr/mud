@@ -21,10 +21,10 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: file_metadata_snapshot; Type: TABLE; Schema: public; Owner: mud
+-- Name: file_metadata_snapshots; Type: TABLE; Schema: public; Owner: mud
 --
 
-CREATE TABLE public.file_metadata_snapshot (
+CREATE TABLE public.file_metadata_snapshots (
     file_metadata_snapshot_id integer NOT NULL,
     scan_time timestamp without time zone,
     file_size integer,
@@ -34,7 +34,7 @@ CREATE TABLE public.file_metadata_snapshot (
 );
 
 
-ALTER TABLE public.file_metadata_snapshot OWNER TO mud;
+ALTER TABLE public.file_metadata_snapshots OWNER TO mud;
 
 --
 -- Name: machines; Type: TABLE; Schema: public; Owner: mud
@@ -77,10 +77,10 @@ CREATE TABLE public.scan_states (
 ALTER TABLE public.scan_states OWNER TO mud;
 
 --
--- Data for Name: file_metadata_snapshot; Type: TABLE DATA; Schema: public; Owner: mud
+-- Data for Name: file_metadata_snapshots; Type: TABLE DATA; Schema: public; Owner: mud
 --
 
-COPY public.file_metadata_snapshot (file_metadata_snapshot_id, scan_time, file_size, sha256, created, modified) FROM stdin;
+COPY public.file_metadata_snapshots (file_metadata_snapshot_id, scan_time, file_size, sha256, created, modified) FROM stdin;
 \.
 
 
@@ -109,11 +109,11 @@ COPY public.scan_states (scan_state_id, scan_state) FROM stdin;
 
 
 --
--- Name: file_metadata_snapshot file_metadata_snapshot_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
+-- Name: file_metadata_snapshots file_metadata_snapshots_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
 --
 
-ALTER TABLE ONLY public.file_metadata_snapshot
-    ADD CONSTRAINT file_metadata_snapshot_pkey PRIMARY KEY (file_metadata_snapshot_id);
+ALTER TABLE ONLY public.file_metadata_snapshots
+    ADD CONSTRAINT file_metadata_snapshots_pkey PRIMARY KEY (file_metadata_snapshot_id);
 
 
 --
