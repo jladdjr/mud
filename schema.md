@@ -35,20 +35,22 @@ Description:
 Represents metadata about a file at a given point in time.
 
 - Primary Key file_metadata_snapshot_id
+- Foreign Key machine_id
+- String dir_path
+- String file_name
 - DateTime scan_time
 - Int file_size
 - String sha256
 - DateTime created
 - DateTime modified
 
-## file_metadata_snapshots
+## dedup_states
 
 Description:
-Represents a specific file located on a specific machine.
+The states representing the life cycle of a dedup session. Validates scan states for the dedup_session table.
 
-- Primary Key file_id
-- Foreign Key machine_id
-- String absolute_path
+- Primary Key dedup_state_id
+- str dedup_state
 
 ## dedup_sessions
 
@@ -59,11 +61,3 @@ Represents a session in which mud analyzed file metadata to identify duplicates.
 - Foreign Key dedup_state_id
 - DateTime dedup_start
 - DateTime dedup_stop
-
-## dedup_states
-
-Description:
-The states representing the life cycle of a dedup session. Validates scan states for the dedup_session table.
-
-- Primary Key dedup_state_id
-- str dedup_state
