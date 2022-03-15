@@ -26,6 +26,9 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.file_metadata_snapshots (
     file_metadata_snapshot_id integer NOT NULL,
+    machine_id integer,
+    dir_path text,
+    file_name text,
     scan_time timestamp without time zone,
     file_size integer,
     sha256 text,
@@ -80,7 +83,7 @@ ALTER TABLE public.scan_states OWNER TO mud;
 -- Data for Name: file_metadata_snapshots; Type: TABLE DATA; Schema: public; Owner: mud
 --
 
-COPY public.file_metadata_snapshots (file_metadata_snapshot_id, scan_time, file_size, sha256, created, modified) FROM stdin;
+COPY public.file_metadata_snapshots (file_metadata_snapshot_id, machine_id, dir_path, file_name, scan_time, file_size, sha256, created, modified) FROM stdin;
 \.
 
 
@@ -146,6 +149,14 @@ ALTER TABLE ONLY public.scan_states
 
 ALTER TABLE ONLY public.scan_sessions
     ADD CONSTRAINT machines_fk FOREIGN KEY (scanned_machine_id) REFERENCES public.machines(machine_id);
+
+
+--
+-- Name: file_metadata_snapshots machines_fk; Type: FK CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.file_metadata_snapshots
+    ADD CONSTRAINT machines_fk FOREIGN KEY (machine_id) REFERENCES public.machines(machine_id);
 
 
 --
