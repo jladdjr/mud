@@ -39,7 +39,10 @@ ALTER TABLE public.machines OWNER TO mud;
 
 CREATE TABLE public.scan_sessions (
     scan_session_id integer NOT NULL,
-    scan_state_id integer
+    scan_state_id integer,
+    scan_start timestamp without time zone,
+    scan_stop timestamp without time zone,
+    scanned_machine_id integer
 );
 
 
@@ -69,7 +72,7 @@ COPY public.machines (machine_id, hostname, description) FROM stdin;
 -- Data for Name: scan_sessions; Type: TABLE DATA; Schema: public; Owner: mud
 --
 
-COPY public.scan_sessions (scan_session_id, scan_state_id) FROM stdin;
+COPY public.scan_sessions (scan_session_id, scan_state_id, scan_start, scan_stop, scanned_machine_id) FROM stdin;
 \.
 
 
@@ -103,6 +106,14 @@ ALTER TABLE ONLY public.scan_sessions
 
 ALTER TABLE ONLY public.scan_states
     ADD CONSTRAINT scan_states_pkey PRIMARY KEY (scan_state_id);
+
+
+--
+-- Name: scan_sessions machines_fk; Type: FK CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.scan_sessions
+    ADD CONSTRAINT machines_fk FOREIGN KEY (scanned_machine_id) REFERENCES public.machines(machine_id);
 
 
 --
