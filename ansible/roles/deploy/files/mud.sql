@@ -21,6 +21,22 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: file_metadata_snapshot; Type: TABLE; Schema: public; Owner: mud
+--
+
+CREATE TABLE public.file_metadata_snapshot (
+    file_metadata_snapshot_id integer NOT NULL,
+    scan_time timestamp without time zone,
+    file_size integer,
+    sha256 text,
+    created timestamp without time zone,
+    modified timestamp without time zone
+);
+
+
+ALTER TABLE public.file_metadata_snapshot OWNER TO mud;
+
+--
 -- Name: machines; Type: TABLE; Schema: public; Owner: mud
 --
 
@@ -61,6 +77,14 @@ CREATE TABLE public.scan_states (
 ALTER TABLE public.scan_states OWNER TO mud;
 
 --
+-- Data for Name: file_metadata_snapshot; Type: TABLE DATA; Schema: public; Owner: mud
+--
+
+COPY public.file_metadata_snapshot (file_metadata_snapshot_id, scan_time, file_size, sha256, created, modified) FROM stdin;
+\.
+
+
+--
 -- Data for Name: machines; Type: TABLE DATA; Schema: public; Owner: mud
 --
 
@@ -82,6 +106,14 @@ COPY public.scan_sessions (scan_session_id, scan_state_id, scan_start, scan_stop
 
 COPY public.scan_states (scan_state_id, scan_state) FROM stdin;
 \.
+
+
+--
+-- Name: file_metadata_snapshot file_metadata_snapshot_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
+--
+
+ALTER TABLE ONLY public.file_metadata_snapshot
+    ADD CONSTRAINT file_metadata_snapshot_pkey PRIMARY KEY (file_metadata_snapshot_id);
 
 
 --

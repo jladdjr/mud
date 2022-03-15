@@ -9,6 +9,14 @@ Represents a host.
 - String hostname
 - String description
 
+## scan_states
+
+Description:
+The states representing the life cycle of a scan. Validates scan states for the scan_session table.
+
+- Primary Key scan_state_id
+- str scan_state
+
 ## scan_sessions
 
 Description:
@@ -21,21 +29,12 @@ Represents a session in which mud scanned directories to collect file metadata.
 - DateTime scan_start
 - DateTime scan_stop
 
-## scan_states
-
-Description:
-The states representing the life cycle of a scan. Validates scan states for the scan_session table.
-
-- Primary Key scan_state_id
-- str scan_state
-
 ## file_metadata_snapshots
 
 Description:
 Represents metadata about a file at a given point in time.
 
 - Primary Key file_metadata_snapshot_id
-- Foreign Key file_id
 - DateTime scan_time
 - Int file_size
 - String sha256
