@@ -11,6 +11,8 @@ from time import perf_counter
 
 from psycopg import connect
 
+from storage import StorageController
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -66,6 +68,8 @@ def calculate_hash(path):
 
 
 def scan(args):
+    sc = StorageController()
+
     logger.debug('entered scan')
     t1 = perf_counter()
 
