@@ -2,9 +2,12 @@
 
 import argparse
 import configparser
+from hashlib import sha1
 import json
 import logging
+import os
 from pathlib import Path
+from time import perf_counter
 
 from psycopg import connect
 
@@ -47,8 +50,20 @@ scan_dirs = [
     ]
 """)
 
+def calculate_hash(path):
+    """Returns sha1 secure hash / message digest for the file at `path`"""
+    t1 = perf_counter()
+    s = sha1()
+    with open(path, 'rb') as f:
+        s.update(f.read())
+    t2 = perf_counter()
+    elapsed_in_ms = (t2 - t1) * 1000
+    logger.debug(f'Hashed {path} in {elapsed_in_ms:.3f} ms')
+    return s.hexdigest()
+
 def scan(args):
     logger.debug('entered scan')
+    t1 = perf_counter()
 
     config = get_config()
     if config is None:
@@ -64,8 +79,25 @@ def scan(args):
         logger.debug('scan_dirs empty')
         return
 
+    num_scanned_files = 0
     for dir in scan_dirs:
-        logger.info(f'scanning {dir}')
+        logger.debug(f'Scanning      {dir}')
+        for root, dirs, files in os.walk(dir):
+            logger.debug(f'Visiting:     {root}')
+            logger.debug(f'Dirs:         {dirs}')
+            logger.debug(f'Files:        {files}')
+
+            for f in files:
+                p = os.path.join(root, f)
+                logger.debug(f'{f} hash: {calculate_hash(p)}')
+
+            num_scanned_files += len(files)
+
+    t2 = perf_counter()
+    elapsed_in_ms = (t2 - t1)
+    logger.debug(f'Scanned {num_scanned_files} files in {elapsed_in_ms:.3f} seconds')
+
+
 
 def main():
     parser = argparse.ArgumentParser(description='A multi-machine file deduper.')
