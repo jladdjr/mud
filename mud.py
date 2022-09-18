@@ -14,7 +14,8 @@ from psycopg import connect
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-DEFAULT_CONFIG_PATHS=['.mud', Path.home() / '.mud']
+DEFAULT_CONFIG_PATHS = ['.mud', Path.home() / '.mud']
+
 
 def get_config():
     for path in DEFAULT_CONFIG_PATHS:
@@ -28,6 +29,7 @@ def get_config():
     else:
         print('Run `mud init` to initiliaze mud')
         return None
+
 
 def init(args):
     """Initialize the deduper settings"""
@@ -50,6 +52,7 @@ scan_dirs = [
     ]
 """)
 
+
 def calculate_hash(path):
     """Returns sha1 secure hash / message digest for the file at `path`"""
     t1 = perf_counter()
@@ -60,6 +63,7 @@ def calculate_hash(path):
     elapsed_in_ms = (t2 - t1) * 1000
     logger.debug(f'Hashed {path} in {elapsed_in_ms:.3f} ms')
     return s.hexdigest()
+
 
 def scan(args):
     logger.debug('entered scan')
@@ -98,7 +102,6 @@ def scan(args):
     logger.debug(f'Scanned {num_scanned_files} files in {elapsed_in_ms:.3f} seconds')
 
 
-
 def main():
     parser = argparse.ArgumentParser(description='A multi-machine file deduper.')
     subparsers = parser.add_subparsers()
@@ -115,6 +118,7 @@ def main():
         parser.print_help()
     else:
         args.func(args)
+
 
 if __name__ == '__main__':
     main()
