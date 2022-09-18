@@ -1,0 +1,4 @@
+---
+
+- import_tasks: drop_db_and_roles.yml
+  tags: uninstall

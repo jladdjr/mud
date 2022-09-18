@@ -1,0 +1,27 @@
+---
+
+- name: Remove mud db if present
+  postgresql_db:
+    name: mud
+    state: absent
+    login_user: postgres
+  become: true
+  become_user: postgres
+
+- name: Remove mud user in postgres
+  postgresql_user:
+    name: mud
+    login_user: postgres
+    state: absent
+  become: true
+  become_user: postgres
+
+- name: Grant local access to mud
+  postgresql_pg_hba:
+    dest: /etc/postgresql/13/main/pg_hba.conf
+    contype: local
+    users: mud
+    databases: mud
+    method: md5
+    state: absent
+  become: true
