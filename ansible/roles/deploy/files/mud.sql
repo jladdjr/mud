@@ -31,7 +31,7 @@ CREATE TABLE public.file_metadata_snapshots (
     file_name text,
     scan_time timestamp without time zone,
     file_size integer,
-    sha256 text,
+    sha1 text,
     created timestamp without time zone,
     modified timestamp without time zone
 );
@@ -83,7 +83,7 @@ ALTER TABLE public.scan_states OWNER TO mud;
 -- Data for Name: file_metadata_snapshots; Type: TABLE DATA; Schema: public; Owner: mud
 --
 
-COPY public.file_metadata_snapshots (file_metadata_snapshot_id, machine_id, dir_path, file_name, scan_time, file_size, sha256, created, modified) FROM stdin;
+COPY public.file_metadata_snapshots (file_metadata_snapshot_id, machine_id, dir_path, file_name, scan_time, file_size, sha1, created, modified) FROM stdin;
 \.
 
 

@@ -1,4 +1,5 @@
 install:
 	ansible-playbook -i inventory -e @secrets.yml install.yml
 uninstall:
-	ansible-playbook -v -i inventory uninstall.yml
+	ansible-playbook -i inventory uninstall.yml
+redeploy: uninstall install
