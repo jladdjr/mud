@@ -16,5 +16,6 @@ class StorageController:
 
     def do_something(self):
         cursor = self.conn.cursor()
-        cursor.execute('INSERT INTO machines (machine_id, hostname, description) VALUES (%s, %s, %s)', (1, 'foohost', 'this is the foo host'))
+        cursor.execute("""INSERT INTO machines (hostname, description) VALUES (%s, %s)""",
+                       ('foohost', 'this is the foo host'))
         self.conn.commit()
