@@ -25,7 +25,7 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.file_metadata_snapshots (
-    file_metadata_snapshot_id integer NOT NULL,
+    file_metadata_snapshot_id SERIAL PRIMARY KEY,
     machine_id integer,
     dir_path text,
     file_name text,
@@ -44,7 +44,7 @@ ALTER TABLE public.file_metadata_snapshots OWNER TO mud;
 --
 
 CREATE TABLE public.machines (
-    machine_id integer NOT NULL,
+    machine_id SERIAL PRIMARY KEY,
     hostname text,
     description text
 );
@@ -57,7 +57,7 @@ ALTER TABLE public.machines OWNER TO mud;
 --
 
 CREATE TABLE public.scan_sessions (
-    scan_session_id integer NOT NULL,
+    scan_session_id SERIAL PRIMARY KEY,
     scan_state_id integer,
     scan_start timestamp without time zone,
     scan_stop timestamp without time zone,
@@ -72,7 +72,7 @@ ALTER TABLE public.scan_sessions OWNER TO mud;
 --
 
 CREATE TABLE public.scan_states (
-    scan_state_id integer NOT NULL,
+    scan_state_id SERIAL PRIMARY KEY,
     scan_state text
 );
 
@@ -112,38 +112,6 @@ COPY public.scan_states (scan_state_id, scan_state) FROM stdin;
 
 
 --
--- Name: file_metadata_snapshots file_metadata_snapshots_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
---
-
-ALTER TABLE ONLY public.file_metadata_snapshots
-    ADD CONSTRAINT file_metadata_snapshots_pkey PRIMARY KEY (file_metadata_snapshot_id);
-
-
---
--- Name: machines machines_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
---
-
-ALTER TABLE ONLY public.machines
-    ADD CONSTRAINT machines_pkey PRIMARY KEY (machine_id);
-
-
---
--- Name: scan_sessions scan_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
---
-
-ALTER TABLE ONLY public.scan_sessions
-    ADD CONSTRAINT scan_sessions_pkey PRIMARY KEY (scan_session_id);
-
-
---
--- Name: scan_states scan_states_pkey; Type: CONSTRAINT; Schema: public; Owner: mud
---
-
-ALTER TABLE ONLY public.scan_states
-    ADD CONSTRAINT scan_states_pkey PRIMARY KEY (scan_state_id);
-
-
---
 -- Name: scan_sessions machines_fk; Type: FK CONSTRAINT; Schema: public; Owner: mud
 --
 
@@ -170,4 +138,3 @@ ALTER TABLE ONLY public.scan_sessions
 --
 -- PostgreSQL database dump complete
 --
-

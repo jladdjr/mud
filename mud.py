@@ -9,8 +9,6 @@ import os
 from pathlib import Path
 from time import perf_counter
 
-from psycopg import connect
-
 from storage import StorageController
 
 logging.basicConfig(level=logging.DEBUG)
@@ -37,13 +35,6 @@ def init(args):
     """Initialize the deduper settings"""
     logger.debug('entered init')
 
-    # Example of how I would connect to the database
-    # conn = connect(dbname='postgres', user='mud', host='localhost', password='secret')
-    # cursor = conn.cursor()
-    # cursor.execute('SHOW WORK_MEM')
-    # memory = cursor.fetchone()
-    # print(memory)
-
     # TODO: Prompt user for config info
     mud_path = Path.home() / '.mud'
     with open(mud_path, 'x') as f:
@@ -53,6 +44,11 @@ scan_dirs = [
     "/home/jim/bar"
     ]
 """)
+
+
+def test(args):
+    sc = StorageController()
+    sc.do_something()
 
 
 def calculate_hash(path):
@@ -68,7 +64,7 @@ def calculate_hash(path):
 
 
 def scan(args):
-    sc = StorageController()
+    # sc = StorageController()
 
     logger.debug('entered scan')
     t1 = perf_counter()
@@ -97,7 +93,10 @@ def scan(args):
 
             for f in files:
                 p = os.path.join(root, f)
-                logger.debug(f'{f} hash: {calculate_hash(p)}')
+                hash = calculate_hash(p)
+                logger.debug(f'{f} hash: {hash}')
+
+                # save hash data
 
             num_scanned_files += len(files)
 
@@ -115,6 +114,9 @@ def main():
 
     parser_scan = subparsers.add_parser('init')
     parser_scan.set_defaults(func=init)
+
+    parser_scan = subparsers.add_parser('test')
+    parser_scan.set_defaults(func=test)
 
     args = parser.parse_args()
 
