@@ -7,15 +7,25 @@ from psycopg import connect
 
 class StorageController:
 
-    def __init__(self):
-        # TODO: Remove hard-coding
-        self.conn = connect(dbname='mud', user='mud', host='localhost', password='fixme')
+    def __init__(self, **kwargs):
+        supported_kwarg_names = ('host', 'dbname', 'user', 'password')
+        supported_kwargs = {}
+        for k, v in kwargs.items():
+            if k in supported_kwarg_names:
+                supported_kwargs[k] = v
+
+        self.conn = connect(**supported_kwargs)
 
     def store_file_metadata_snapshot(self):
         pass
 
-    def do_something(self):
+    def add_machine(self, hostname, description):
         cursor = self.conn.cursor()
         cursor.execute("""INSERT INTO machines (hostname, description) VALUES (%s, %s)""",
-                       ('foohost', 'this is the foo host'))
+                       (hostname, description))
         self.conn.commit()
+
+    def get_machine(self, hostname):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT hostname, description from machines where hostname = %s", (hostname,))
+        return cursor.fetchone()
