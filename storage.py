@@ -16,7 +16,7 @@ class StorageController:
 
         self.conn = connect(**supported_kwargs)
 
-    def store_file_metadata_snapshot(self):
+    def add_file_metadata_snapshot(self):
         pass
 
     def add_machine(self, hostname, description):
