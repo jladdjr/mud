@@ -17,6 +17,7 @@ class StorageController:
         self.conn = connect(**supported_kwargs)
 
     def add_file_metadata_snapshot(self):
+        # TODO create function that looks up machine id based on cache
         pass
 
     def add_machine(self, hostname, description):
