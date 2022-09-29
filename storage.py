@@ -25,6 +25,7 @@ class StorageController:
                 supported_kwargs[k] = v
 
         self.conn = connect(**supported_kwargs)
+        self.cache = {}
 
     def add_file_metadata_snapshot(self):
         # TODO create function that looks up machine id based on cache
@@ -55,9 +56,13 @@ class StorageController:
     def get_or_create_machine(self, hostname=None, description=""):
         """Looks up `hostname` machine. If `hostname` is None, searches for machine entry for
         current host. Creates a new Machine entry if none are found. Returns a `Machine` object."""
+        if "local_machine" in self.cache:
+            return self.cache["local_machine"]
+
         if hostname is None:
             hostname = gethostname()
         machine = self.get_machine(hostname)
-        if machine:
-            return machine
-        return self.add_machine(hostname, description)
+        if machine is None:
+            machine = self.add_machine(hostname, description)
+        self.cache["local_machine"] = machine
+        return machine
