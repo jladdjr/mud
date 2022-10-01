@@ -28,20 +28,32 @@ class StorageController:
         self.conn = connect(**supported_kwargs)
         self.cache = {}
 
-    def add_file_metadata_snapshot(self, machine: Machine,
-                                   dir_path: str,
-                                   file_name: str,
-                                   scan_time: datetime,
-                                   file_size: int,
-                                   sha1: str,
-                                   created: datetime,
-                                   modified: datetime):
+    def add_file_metadata_snapshot(
+        self,
+        machine: Machine,
+        dir_path: str,
+        file_name: str,
+        scan_time: datetime,
+        file_size: int,
+        sha1: str,
+        created: datetime,
+        modified: datetime,
+    ):
         cursor = self.conn.cursor()
         fields = "machine_id, dir_path, file_name, scan_time, file_size, sha1, created, modified"
         value_place_holders = "%s, %s, %s, %s, %s, %s, %s, %s"
         cursor.execute(
             f"INSERT INTO file_metadata_snapshots ({fields}) VALUES ({value_place_holders})",
-            (machine.id, dir_path, file_name, scan_time, file_size, sha1, created, modified)
+            (
+                machine.id,
+                dir_path,
+                file_name,
+                scan_time,
+                file_size,
+                sha1,
+                created,
+                modified,
+            ),
         )
         self.conn.commit()
 

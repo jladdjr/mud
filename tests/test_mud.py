@@ -57,19 +57,31 @@ class StorageControllerTests(unittest.TestCase):
         created = datetime.now() - timedelta(days=30)
         modified = datetime.now() - timedelta(days=15)
         machine = Machine(1379, "enigma", "the enigma machine")
-        sc.add_file_metadata_snapshot(machine=machine,
-                                      dir_path="/some/path",
-                                      file_name="foo",
-                                      scan_time=scan_time,
-                                      file_size=4222242,
-                                      sha1="78b371f0ea1410abc62ccb9b7f40c34288a72e1a",
-                                      created=created,
-                                      modified=modified)
+        sc.add_file_metadata_snapshot(
+            machine=machine,
+            dir_path="/some/path",
+            file_name="foo",
+            scan_time=scan_time,
+            file_size=4222242,
+            sha1="78b371f0ea1410abc62ccb9b7f40c34288a72e1a",
+            created=created,
+            modified=modified,
+        )
 
         execute_mock = connect_mock.return_value.cursor.return_value.execute
         insert_fields = "machine_id, dir_path, file_name, scan_time, file_size, sha1, created, modified"
         value_place_holders = "%s, %s, %s, %s, %s, %s, %s, %s"
-        expected_execute_args = (f"INSERT INTO file_metadata_snapshots ({insert_fields}) VALUES ({value_place_holders})",
-                                 (1379, "/some/path", "foo", scan_time, 4222242, "78b371f0ea1410abc62ccb9b7f40c34288a72e1a",
-                                  created, modified))
+        expected_execute_args = (
+            f"INSERT INTO file_metadata_snapshots ({insert_fields}) VALUES ({value_place_holders})",
+            (
+                1379,
+                "/some/path",
+                "foo",
+                scan_time,
+                4222242,
+                "78b371f0ea1410abc62ccb9b7f40c34288a72e1a",
+                created,
+                modified,
+            ),
+        )
         execute_mock.assert_called_once_with(*expected_execute_args)
