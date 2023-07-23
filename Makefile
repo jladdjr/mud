@@ -4,7 +4,7 @@ test:
 system_requirements:
 	cat system_requirements.txt | xargs -I{} sudo apt -y install {}
 
-regenerate_venv:
+venv:
 	rm -rf venv
 	python3 -m venv venv
 	venv/bin/pip3 install -U -r requirements.txt
