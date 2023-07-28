@@ -9,6 +9,7 @@ from datetime import datetime
 from psycopg import connect
 from socket import gethostname
 
+from utils import get_hostname
 
 @dataclass
 class Machine:
@@ -30,7 +31,7 @@ class StorageController:
 
     def add_file_metadata_snapshot(
         self,
-        machine: Machine,
+        machine_id: int,
         dir_path: str,
         file_name: str,
         scan_time: datetime,
@@ -45,7 +46,7 @@ class StorageController:
         cursor.execute(
             f"INSERT INTO file_metadata_snapshots ({fields}) VALUES ({value_place_holders})",
             (
-                machine.id,
+                machine_id,
                 dir_path,
                 file_name,
                 scan_time,
@@ -67,7 +68,14 @@ class StorageController:
         self.conn.commit()
         return Machine(id, hostname, description)
 
-    def get_machine(self, hostname):
+    def get_machine(self, hostname=""):
+        """Gets machine record matching hostname.
+
+        Defaults to retrieving information for current machine if
+        no hostname is provided."""
+        if not hostname:
+            hostname = get_hostname()
+
         cursor = self.conn.cursor()
         cursor.execute(
             "SELECT machine_id, hostname, description FROM machines WHERE hostname = %s",

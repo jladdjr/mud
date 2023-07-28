@@ -6,10 +6,12 @@ from hashlib import sha1
 import json
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
 from time import perf_counter
 
 from storage import StorageController
+from utils import get_hostname
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -73,8 +75,25 @@ def calculate_hash(path):
     return s.hexdigest()
 
 
+def collect_file_metadata(path, filename):
+    p = os.path.join(path, filename)
+    hash = calculate_hash(p)
+    file_stat = os.lstat(p)
+    size = file_stat.st_size
+    created = datetime.fromtimestamp(file_stat.st_ctime)
+    modified = datetime.fromtimestamp(file_stat.st_mtime)
+
+    return { 'dir_path': path,
+             'file_name': filename,
+             'file_size': size,
+             'sha1': hash,
+             'created': created,
+             'modified': modified }
+
+
 def scan(args):
     sc = get_storage_controller()
+    machine_id = get_machine_id()
 
     logger.debug("entered scan")
     t1 = perf_counter()
@@ -101,11 +120,10 @@ def scan(args):
             logger.debug(f"Files:        {files}")
 
             for f in files:
-                p = os.path.join(root, f)
-                hash = calculate_hash(p)
-                logger.debug(f"{f} hash: {hash}")
-
-                # save hash data
+                metadata = { 'machine_id': machine_id,
+                             'scan_time': datetime.now() }
+                metadata.update(collect_file_metadata(root, f))
+                sc.add_file_metadata_snapshot(**metadata)
 
             num_scanned_files += len(files)
 
@@ -113,10 +131,6 @@ def scan(args):
     elapsed_in_ms = t2 - t1
     logger.debug(f"Scanned {num_scanned_files} files in {elapsed_in_ms:.3f} seconds")
 
-
-def get_hostname():
-    import platform
-    return platform.node()
 
 def register_machine(args):
     sc = get_storage_controller()
@@ -130,6 +144,12 @@ def register_machine(args):
     sc.add_machine(hostname, "TODO: Add support for description")
     logger.debug(f"Registered {hostname}")
     print(f"Registered {hostname}")
+
+
+def get_machine_id():
+    sc = get_storage_controller()
+    this_machine = sc.get_machine()
+    return this_machine.id
 
 
 def main():
