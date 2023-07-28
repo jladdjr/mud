@@ -17,7 +17,7 @@
 
 - name: Grant local access to mud
   postgresql_pg_hba:
-    dest: /etc/postgresql/13/main/pg_hba.conf
+    dest: /etc/postgresql/15/main/pg_hba.conf
     contype: local
     users: mud
     databases: mud
@@ -25,9 +25,9 @@
     state: present
   become: true
 
-# https://www.postgresql.org/docs/13/app-pg-ctl.html
+# https://www.postgresql.org/docs/15/app-pg-ctl.html
 - name: Reload pg_hba.conf configuration
-  shell: pg_ctlcluster 13 main reload
+  shell: pg_ctlcluster 15 main reload
   become: true
 
 - name: Remove existing mud db if present

@@ -18,7 +18,7 @@
 
 - name: Revoke local access to mud
   postgresql_pg_hba:
-    dest: /etc/postgresql/13/main/pg_hba.conf
+    dest: /etc/postgresql/15/main/pg_hba.conf
     contype: local
     users: mud
     databases: mud

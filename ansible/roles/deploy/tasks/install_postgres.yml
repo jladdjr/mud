@@ -2,8 +2,8 @@
 - name: Install postgres
   apt:
     name:
-      - postgresql-13
-      - postgresql-doc-13
+      - postgresql-15
+      - postgresql-doc-15
   become: true
 
 - name: Set postgres password

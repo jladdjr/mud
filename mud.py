@@ -49,8 +49,8 @@ scan_dirs = [
 
 
 def test(args):
-    sc = StorageController()
-    sc.do_something()
+    # TODO: remove hard-coded auth information
+    sc = StorageController(dbname='mud', user='mud', password='fixme')
 
 
 def calculate_hash(path):
@@ -118,6 +118,8 @@ def main():
 
     parser_scan = subparsers.add_parser("test")
     parser_scan.set_defaults(func=test)
+
+    # TODO: add command for registering machine
 
     args = parser.parse_args()
 
