@@ -14,7 +14,7 @@ from storage import StorageController
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-DEFAULT_CONFIG_PATHS = [".mud", Path.home() / ".mud"]
+DEFAULT_CONFIG_PATHS = [".mudrc", Path.home() / ".mudrc"]
 
 
 def get_config():
@@ -36,7 +36,7 @@ def init(args):
     logger.debug("entered init")
 
     # TODO: Prompt user for config info
-    mud_path = Path.home() / ".mud"
+    mud_path = Path.home() / ".mudrc"
     with open(mud_path, "x") as f:
         f.write(
             """[scan]
