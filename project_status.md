@@ -10,8 +10,13 @@
 
 | Goal                                                                           | Status      | Notes                                                                                                                |
 |:-------------------------------------------------------------------------------|:------------|:---------------------------------------------------------------------------------------------------------------------|
-| Do not add metadata for file that already exists                               | Not Started |                                                                                                                      |
-| Add ability to invoke installer / uninstaller using the CLI                    | Not Started | Should prompt user to confirm that they want to delete everything (and let them know what they will lose)            |
 | Update creation of StorageController to source user's db configuration         | Not Started | Will need to either handle DB password securely, or defer to PostgreSQL's method of storing the password if possible |
+| Add ability to connect to remote PostgreSQL instance                           | Not Started |                                                                                                                      |
+| Update metadata if it already exists                                           | Not Started |                                                                                                                      |
+| Create records to note when scans happened                                     | Not Started |                                                                                                                      |
+| Skip files that haven't changed since last scan                                | Not Started |                                                                                                                      |
+| Create progress bar for scans                                                  | Not Started |                                                                                                                      |
+| Create first analyzer / report (e.g. largest files, redundant files)           | Not Started |                                                                                                                      |
+| Add ability to invoke installer / uninstaller using the CLI                    | Not Started | Should prompt user to confirm that they want to delete everything (and let them know what they will lose)            |
 | Create install directory, place all install-related files under the new folder | Not Started |                                                                                                                      |
 

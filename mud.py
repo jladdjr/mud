@@ -121,6 +121,8 @@ def scan(args):
         logger.debug("scan_dirs empty")
         return
 
+    # TODO: Count number of files to visit before beginning to collect data?
+    # TODO: Surface this as progress bar?
     num_scanned_files = 0
     for dir in scan_dirs:
         logger.debug(f"Scanning      {dir}")
@@ -137,6 +139,8 @@ def scan(args):
                 metadata = { 'machine_id': machine_id,
                              'scan_time': datetime.now() }
                 metadata.update(collect_file_metadata(root, f))
+                # TODO: Skip file if hasn't changed since last scan time
+                # TODO: Create add_or_update_file_metadata_snapshot?
                 sc.add_file_metadata_snapshot(**metadata)
 
             num_scanned_files += len(files)
