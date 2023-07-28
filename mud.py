@@ -47,10 +47,18 @@ scan_dirs = [
 """
         )
 
+STORAGE_CONTROLLER = None
+
+def get_storage_controller():
+    global STORAGE_CONTROLLER
+    if not STORAGE_CONTROLLER:
+        # TODO: remove hard-coded auth information
+        STORAGE_CONTROLLER = StorageController(dbname='mud', user='mud', password='fixme')
+    return STORAGE_CONTROLLER
+
 
 def test(args):
-    # TODO: remove hard-coded auth information
-    sc = StorageController(dbname='mud', user='mud', password='fixme')
+    sc = get_storage_controller()
 
 
 def calculate_hash(path):
@@ -66,7 +74,7 @@ def calculate_hash(path):
 
 
 def scan(args):
-    # sc = StorageController()
+    sc = get_storage_controller()
 
     logger.debug("entered scan")
     t1 = perf_counter()
@@ -106,15 +114,36 @@ def scan(args):
     logger.debug(f"Scanned {num_scanned_files} files in {elapsed_in_ms:.3f} seconds")
 
 
+def get_hostname():
+    import platform
+    return platform.node()
+
+def register_machine(args):
+    sc = get_storage_controller()
+    logger.debug("Registering this machine")
+
+    # TODO: Add support for letting user specify description for the machine
+    hostname = get_hostname()
+    if sc.get_machine(hostname):
+        print(f"{hostname} already registered!")
+        return
+    sc.add_machine(hostname, "TODO: Add support for description")
+    logger.debug(f"Registered {hostname}")
+    print(f"Registered {hostname}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="A multi-machine file deduper.")
     subparsers = parser.add_subparsers()
 
+    parser_scan = subparsers.add_parser("init")
+    parser_scan.set_defaults(func=init)
+
     parser_scan = subparsers.add_parser("scan")
     parser_scan.set_defaults(func=scan)
 
-    parser_scan = subparsers.add_parser("init")
-    parser_scan.set_defaults(func=init)
+    parser_scan = subparsers.add_parser("register_machine")
+    parser_scan.set_defaults(func=register_machine)
 
     parser_scan = subparsers.add_parser("test")
     parser_scan.set_defaults(func=test)
