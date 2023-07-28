@@ -75,6 +75,16 @@ def calculate_hash(path):
     return s.hexdigest()
 
 
+def is_regular_file(path, filename):
+    p = os.path.join(path, filename)
+    return os.path.isfile(p)
+
+
+def is_symbolic_link(path, filename):
+    p = os.path.join(path, filename)
+    return os.path.islink(p)
+
+
 def collect_file_metadata(path, filename):
     p = os.path.join(path, filename)
     hash = calculate_hash(p)
@@ -120,6 +130,10 @@ def scan(args):
             logger.debug(f"Files:        {files}")
 
             for f in files:
+                if not is_regular_file(root, f):
+                    logger.debug(f"Skipping {f} (not regular file)")
+                    continue
+
                 metadata = { 'machine_id': machine_id,
                              'scan_time': datetime.now() }
                 metadata.update(collect_file_metadata(root, f))
