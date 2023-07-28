@@ -13,6 +13,8 @@ Before we begin, let's first note that `postgres` is heavily overloaded in the f
 
 In the following instructions we will try to call out which specific role we are referring to :-)
 
+#### Install PostgreSQL
+
 On Debian, install the following:
 
 <!-- https://www.postgresql.org/docs/15/index.html -->
@@ -22,6 +24,8 @@ On Debian, install the following:
 Note that this will automatically create the postgres user for you.
 
 This will also automatically create a database cluster for you, which can be confirmed by calling `pg_lsclusters`.
+
+#### Create new database user ("mud")
 
 By default, postgres will use `peer` authentication for the postgres user. This requires that you be logged in as the `postgres` _system_ user when calling `psql -U postgres`.
 
@@ -38,7 +42,7 @@ Next, add the following line to pg\_hba.conf to ensure password-based access is 
 
 Note: On Debian, this file is located at `/etc/postgresql/15/main/pg_hba.conf`
 
-Finally, prompt postgres to reload the pg_hba.conf configuration with:
+Next, prompt postgres to reload the pg_hba.conf configuration with:
   `pg_ctlcluster 15 main reload`
 
 You can confirm that the `mud` user has access by logging out of the `postgres` user session and calling:
@@ -46,9 +50,19 @@ You can confirm that the `mud` user has access by logging out of the `postgres` 
 
 If successful, this should log you into the `postgres` database (one of the default databases intially present) as the `mud` user.
 
+#### Create new database ("mud")
+
+1. Switch to the `postgres` user (`sudo su` followed by `su postrges`).
+2. Create a new database and set the `mud` user as owner with `createdb -O mud mud`.
+
+#### Troubleshooting database issues
+
 Should you encounter errors during this process, consult the postgres log file located at `/var/log/postgresql/postgresql-15-main.log`
 
-## Sample .mud config file
+## Configuring Mud
+
+Sample .mudrc file is provided below.
+Can be in current working directory or in user's home folder.
 
 ```
 [scan]
