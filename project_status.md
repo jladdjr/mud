@@ -10,8 +10,6 @@
 
 | Goal                                                                           | Status      | Notes                                                                                                                |
 |:-------------------------------------------------------------------------------|:------------|:---------------------------------------------------------------------------------------------------------------------|
-| Update creation of StorageController to source user's db configuration         | Not Started | Will need to either handle DB password securely, or defer to PostgreSQL's method of storing the password if possible |
-| Add ability to connect to remote PostgreSQL instance                           | Not Started |                                                                                                                      |
 | Update metadata if it already exists                                           | Not Started |                                                                                                                      |
 | Create records to note when scans happened                                     | Not Started |                                                                                                                      |
 | Skip files that haven't changed since last scan                                | Not Started |                                                                                                                      |

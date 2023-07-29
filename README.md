@@ -36,7 +36,8 @@ Do the following to create a new postgres (application) user, called `mud`, that
 - Create the mud user with:
   `CREATE ROLE mud WITH LOGIN PASSWORD 'thisisnotarealpassword';`
 
-Next, add the following line to pg\_hba.conf to ensure password-based access is enabled for the `mud` user. Place this rule before all other existing rules to make sure it is evaluated first (the rules in pg\_hba.conf are evaluated sequentially).
+Next, add the following line to `/etc/postgresql/15/main/pg\_hba.conf` to ensure password-based access is enabled for the `mud` user.
+Place this rule before all other existing rules to make sure it is evaluated first (the rules in pg\_hba.conf are evaluated sequentially).
 
   `local all mud md5`
 
@@ -54,6 +55,21 @@ If successful, this should log you into the `postgres` database (one of the defa
 
 1. Switch to the `postgres` user (`sudo su` followed by `su postrges`).
 2. Create a new database and set the `mud` user as owner with `createdb -O mud mud`.
+
+#### Expose database services to other hosts
+
+Add the following line to `/etc/postgresql/15/main/pg\_hba.conf` to ensure password-based access is enabled for the `mud` user from other hosts.
+Place this rule before all other existing rules to make sure it is evaluated first (the rules in pg\_hba.conf are evaluated sequentially).
+
+`host all mud ADDRESS md5`
+
+.. replacing ADDRESS with a hostname or IP address with CIDR mask (e.g. `192.168.1.0/24`).
+
+Next, update `/etc/postgresql/15/main/pg\_hba.conf` to allow connections from external hosts, by adding (or updating, if already set):
+
+`listen_addresses = '*'`
+
+This setting defaults to `localhost`.
 
 #### Troubleshooting database issues
 
