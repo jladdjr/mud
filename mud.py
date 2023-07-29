@@ -7,6 +7,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
+from time import perf_counter
 
 from storage import StorageController
 from utils import calculate_hash, get_hostname
