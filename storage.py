@@ -29,6 +29,9 @@ class StorageController:
         self.conn = connect(**supported_kwargs)
         self.cache = {}
 
+    def add_scan_session(self):
+        pass
+
     def add_file_metadata_snapshot(
         self,
         machine_id: int,

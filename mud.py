@@ -2,16 +2,14 @@
 
 import argparse
 import configparser
-from hashlib import sha1
 import json
 import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from time import perf_counter
 
 from storage import StorageController
-from utils import get_hostname
+from utils import calculate_hash, get_hostname
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -33,6 +31,50 @@ def get_config():
         return None
 
 
+def collect_db_config(config):
+    if 'db' not in config.sections():
+        raise DB_Config_Missing()
+    db_options = ('host', 'dbname', 'user', 'password')
+    db_config = {}
+    for item in config['db'].items():
+        key, value = item
+        if key not in db_options:
+            logger.warning(f"'{key}' not a valid entry in [db] section of config")
+            continue
+        db_config[key] = value.replace('"', '')
+    return db_config
+
+
+STORAGE_CONTROLLER = None
+
+
+def get_storage_controller(db_config):
+    global STORAGE_CONTROLLER
+    if not STORAGE_CONTROLLER:
+        STORAGE_CONTROLLER = StorageController(**db_config)
+    return STORAGE_CONTROLLER
+
+
+def register_machine(args):
+    sc = get_storage_controller(collect_db_config(get_config()))
+    logger.debug("Registering this machine")
+
+    # TODO: Add support for letting user specify description for the machine
+    hostname = get_hostname()
+    if sc.get_machine(hostname):
+        print(f"{hostname} already registered!")
+        return
+    sc.add_machine(hostname, "TODO: Add support for description")
+    logger.debug(f"Registered {hostname}")
+    print(f"Registered {hostname}")
+
+
+def get_machine_id():
+    sc = get_storage_controller(collect_db_config(get_config()))
+    this_machine = sc.get_machine()
+    return this_machine.id
+
+
 def init(args):
     """Initialize the deduper settings"""
     logger.debug("entered init")
@@ -46,34 +88,14 @@ scan_dirs = [
     "/home/jim/foo",
     "/home/jim/bar"
     ]
+
+[db]
+host = localhost
+dbname = mud
+user = mud
+password = fixme
 """
         )
-
-STORAGE_CONTROLLER = None
-
-def get_storage_controller():
-    global STORAGE_CONTROLLER
-    if not STORAGE_CONTROLLER:
-        # TODO: remove hard-coded auth information
-        STORAGE_CONTROLLER = StorageController(dbname='mud', user='mud', password='fixme')
-    return STORAGE_CONTROLLER
-
-
-def test(args):
-    sc = get_storage_controller()
-
-
-def calculate_hash(path):
-    """Returns sha1 secure hash / message digest for the file at `path`"""
-    t1 = perf_counter()
-    s = sha1()
-    with open(path, "rb") as f:
-        s.update(f.read())
-    t2 = perf_counter()
-    elapsed_in_ms = (t2 - t1) * 1000
-    logger.debug(f"Hashed {path} in {elapsed_in_ms:.3f} ms")
-    return s.hexdigest()
-
 
 def is_regular_file(path, filename):
     p = os.path.join(path, filename)
@@ -101,14 +123,18 @@ def collect_file_metadata(path, filename):
              'modified': modified }
 
 
+class DB_Config_Missing(Exception):
+    pass
+
+
 def scan(args):
-    sc = get_storage_controller()
+    config = get_config()
+    sc = get_storage_controller(collect_db_config(config))
     machine_id = get_machine_id()
 
     logger.debug("entered scan")
     t1 = perf_counter()
 
-    config = get_config()
     if config is None:
         # missing config file, exit
         return
@@ -150,26 +176,6 @@ def scan(args):
     logger.debug(f"Scanned {num_scanned_files} files in {elapsed_in_ms:.3f} seconds")
 
 
-def register_machine(args):
-    sc = get_storage_controller()
-    logger.debug("Registering this machine")
-
-    # TODO: Add support for letting user specify description for the machine
-    hostname = get_hostname()
-    if sc.get_machine(hostname):
-        print(f"{hostname} already registered!")
-        return
-    sc.add_machine(hostname, "TODO: Add support for description")
-    logger.debug(f"Registered {hostname}")
-    print(f"Registered {hostname}")
-
-
-def get_machine_id():
-    sc = get_storage_controller()
-    this_machine = sc.get_machine()
-    return this_machine.id
-
-
 def main():
     parser = argparse.ArgumentParser(description="A multi-machine file deduper.")
     subparsers = parser.add_subparsers()
@@ -182,11 +188,6 @@ def main():
 
     parser_scan = subparsers.add_parser("register_machine")
     parser_scan.set_defaults(func=register_machine)
-
-    parser_scan = subparsers.add_parser("test")
-    parser_scan.set_defaults(func=test)
-
-    # TODO: add command for registering machine
 
     args = parser.parse_args()
 
